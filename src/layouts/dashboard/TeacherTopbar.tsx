@@ -1,15 +1,15 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { Bell, Menu, Search, X } from "lucide-react";
-import { ThemeToggleButton } from "../../shared/ui";
+import { ConfirmDialog, ThemeToggleButton } from "../../shared/ui";
 import { useTheme } from "../../shared/theme/useTheme";
+import { useAuth } from "../../core/auth/useAuth";
+import { ROUTES } from "../../core/router/routes";
 import type { NavItem } from "./navItems";
 
 type TeacherTopbarProps = {
   navItems: NavItem[];
-
   showNavLinksOnDesktop?: boolean;
-
   onLogout?: () => void;
   avatarUrl?: string;
 };
@@ -17,44 +17,74 @@ type TeacherTopbarProps = {
 const baseLink =
   "relative text-sm font-medium transition-colors after:absolute after:left-0 after:-bottom-2 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:transition-transform hover:after:scale-x-100";
 
+const LOGO_LIGHT_SRC = "/images/lightlogo.png"; 
+const LOGO_DARK_SRC = "/images/topbarlogo.png"; 
+
+const FALLBACK_AVATAR_LIGHT = "https://i.pravatar.cc/120?img=32"; 
+const FALLBACK_AVATAR_DARK = "https://i.pravatar.cc/120?img=32"; 
+
 export default function TeacherTopbar({
   navItems,
   showNavLinksOnDesktop,
   onLogout,
   avatarUrl,
 }: TeacherTopbarProps) {
+  const navigate = useNavigate();
+  const { logout } = useAuth();
   const { theme } = useTheme();
   const isDark = theme === "dark";
+
+  // ✅ show desktop links in both themes by default
   const shouldShowNavLinks = showNavLinksOnDesktop !== false;
+
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [loggingOut, setLoggingOut] = React.useState(false);
+  const [confirmOpen, setConfirmOpen] = React.useState(false);
+
+  const handleLogout = () => setConfirmOpen(true);
+
+  const confirmLogout = () => {
+    if (loggingOut) return;
+    setLoggingOut(true);
+    setMobileOpen(false);
+    try {
+      logout();
+      onLogout?.();
+      navigate(ROUTES.login, { replace: true });
+    } finally {
+      setLoggingOut(false);
+      setConfirmOpen(false);
+    }
+  };
 
   const headerClass = isDark
     ? "border-[rgb(var(--border))] bg-gradient-to-r from-[#0B0017] via-[#140026] to-[#0B0017] text-[rgb(var(--text))]"
     : "border-[rgb(var(--border))] bg-[rgb(var(--surface))] text-[rgb(var(--text))]";
 
-  const containerClass = "mx-auto flex h-[72px]  items-center gap-3 px-4 sm:px-6 lg:px-8";
+  const containerClass = "mx-auto flex h-[72px] items-center gap-3 px-4 sm:px-6 lg:px-8";
 
   const searchWrapClass = "border-[rgb(var(--border))] bg-[rgb(var(--surface-2))]";
-
   const searchInputClass = "text-[rgb(var(--text))] placeholder:text-[rgb(var(--muted))]";
-
   const iconBtnClass = "text-[rgb(var(--muted))] hover:bg-[rgb(var(--surface-2))]";
 
   const logoutBtnClass = isDark
     ? "border border-violet-300/30 bg-white/5 text-white/70 hover:bg-white/10"
     : "bg-red-500 text-white hover:bg-red-600";
 
-  const logoColor = isDark ? "text-violet-600" : "text-lime-500";
+  // ✅ If you still want colored brand text
+  const logoColor = isDark ? "text-violet-300" : "text-lime-600";
 
-  const activeLinkClass = "text-[rgb(var(--text))] after:bg-[rgb(var(--accent))]";
-
+  const activeLinkClass = "text-[rgb(var(--text))] after:bg-[rgb(var(--primary))] after:scale-x-100";
   const inactiveLinkClass =
-    "text-[rgb(var(--muted))] hover:text-[rgb(var(--text))] after:bg-[rgb(var(--muted))] hover:after:bg-[rgb(var(--text))]";
+    "text-[rgb(var(--muted))] hover:text-[rgb(var(--text))] after:bg-[rgb(var(--primary))] after:opacity-0 hover:after:opacity-100";
+
+  const finalAvatarSrc = avatarUrl || (isDark ? FALLBACK_AVATAR_DARK : FALLBACK_AVATAR_LIGHT);
+  const finalLogoSrc = isDark ? LOGO_DARK_SRC : LOGO_LIGHT_SRC;
 
   return (
     <header className={`sticky top-0 z-40 w-full border-b ${headerClass}`}>
       <div className={containerClass}>
-        {/* Mobile menu button (no sidebar; just opens topbar menu) */}
+        {/* Mobile menu button */}
         <button
           type="button"
           onClick={() => setMobileOpen(true)}
@@ -64,13 +94,31 @@ export default function TeacherTopbar({
           <Menu className="h-5 w-5" />
         </button>
 
-        {/* Logo */}
+        {/* ✅ Logo (two src: light/dark) */}
         <div className="flex items-center gap-2">
-          <div className={`h-9 w-9 rounded-xl ${isDark ? "bg-violet-500/15" : "bg-lime-500/15"}`} />
-          <span className={`text-lg font-semibold tracking-tight ${logoColor}`}>logo</span>
+          <div
+            className={["grid h-9 w-9 place-items-center overflow-hidden rounded-xl", isDark ? "bg-white/5" : "bg-slate-100"].join(
+              " "
+            )}
+          >
+            <img
+              src={finalLogoSrc}
+              alt="Logo"
+              className="h-full w-full object-contain"
+              loading="lazy"
+              decoding="async"
+              onError={(e) => {
+                // Optional: if logo fails, keep the box but avoid broken icon
+                e.currentTarget.style.display = "none";
+              }}
+            />
+          </div>
+
+          {/* Optional brand text - remove if you want image-only */}
+          <span className={`text-lg font-semibold tracking-tight ${logoColor}`}>Edu Manage</span>
         </div>
 
-        {/* Center nav (desktop) — only for LIGHT by default (matches screenshot) */}
+        {/* Desktop nav links */}
         {shouldShowNavLinks && (
           <nav className="hidden flex-1 items-center justify-center gap-7 lg:flex">
             {navItems.map((item) => (
@@ -92,9 +140,7 @@ export default function TeacherTopbar({
           {/* Search (desktop) */}
           <div className="hidden lg:block">
             <div className={`relative h-11 w-[360px] rounded-2xl border ${searchWrapClass}`}>
-              <Search
-                className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[rgb(var(--muted))]"
-              />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[rgb(var(--muted))]" />
               <input
                 className={`h-full w-full rounded-2xl bg-transparent pl-10 pr-3 text-sm outline-none ${searchInputClass}`}
                 placeholder="Search for students, assignment"
@@ -114,36 +160,40 @@ export default function TeacherTopbar({
           {/* Logout */}
           <button
             type="button"
-            onClick={onLogout}
+            onClick={handleLogout}
             className={`h-10 rounded-2xl px-5 text-sm font-semibold transition ${logoutBtnClass}`}
+            aria-label="Logout"
+            disabled={loggingOut}
           >
-            Logout
+            {loggingOut ? "Logging out..." : "Logout"}
           </button>
 
           {/* Theme toggle */}
           <ThemeToggleButton />
 
-          {/* Avatar */}
+          {/* ✅ Avatar (two src: light/dark fallback) */}
           <div className={`h-10 w-10 overflow-hidden rounded-full ${isDark ? "ring-2 ring-white/10" : ""}`}>
-            {avatarUrl ? (
-              <img src={avatarUrl} alt="avatar" className="h-full w-full object-cover" />
-            ) : (
-              <div className={`h-full w-full ${isDark ? "bg-white/10" : "bg-slate-100"}`} />
-            )}
+            <img
+              src={finalAvatarSrc}
+              alt="avatar"
+              className="h-full w-full object-cover"
+              loading="lazy"
+              decoding="async"
+              referrerPolicy="no-referrer"
+              onError={(e) => {
+                const img = e.currentTarget;
+                img.src = isDark ? FALLBACK_AVATAR_DARK : FALLBACK_AVATAR_LIGHT;
+              }}
+            />
           </div>
         </div>
       </div>
 
-      {/* Dark theme bottom glow strip (matches screenshot feel) */}
+      {/* Dark theme bottom glow strip */}
       {isDark && <div className="h-[4px] w-full bg-gradient-to-r from-transparent via-violet-700/35 to-transparent" />}
 
       {/* Mobile menu overlay + panel */}
-      <div
-        className={[
-          "fixed inset-0 z-50 lg:hidden",
-          mobileOpen ? "" : "pointer-events-none",
-        ].join(" ")}
-      >
+      <div className={["fixed inset-0 z-50 lg:hidden", mobileOpen ? "" : "pointer-events-none"].join(" ")}>
         <div
           className={[
             "absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity",
@@ -156,9 +206,7 @@ export default function TeacherTopbar({
           className={[
             "absolute left-1/2 top-4 w-[calc(100%-2rem)] max-w-xl -translate-x-1/2 rounded-3xl border p-4 shadow-2xl transition",
             mobileOpen ? "translate-y-0 opacity-100" : "-translate-y-2 opacity-0",
-            isDark
-              ? "border-white/10 bg-[#0B0017]/95 text-white"
-              : "border-slate-200 bg-white text-slate-900",
+            isDark ? "border-white/10 bg-[#0B0017]/95 text-white" : "border-slate-200 bg-white text-slate-900",
           ].join(" ")}
         >
           <div className="flex items-center justify-between">
@@ -188,7 +236,7 @@ export default function TeacherTopbar({
             </div>
           </div>
 
-          {/* Mobile nav links (always visible here) */}
+          {/* Mobile nav links */}
           <nav className="mt-4 grid grid-cols-1 gap-1">
             {navItems.map((item) => (
               <NavLink
@@ -203,8 +251,8 @@ export default function TeacherTopbar({
                         ? "bg-white/10 text-white"
                         : "bg-lime-500/10 text-lime-700"
                       : isDark
-                        ? "text-white/75 hover:bg-white/5 hover:text-white"
-                        : "text-slate-700 hover:bg-slate-100 hover:text-slate-900",
+                      ? "text-white/75 hover:bg-white/5 hover:text-white"
+                      : "text-slate-700 hover:bg-slate-100 hover:text-slate-900",
                   ].join(" ")
                 }
               >
@@ -214,6 +262,17 @@ export default function TeacherTopbar({
           </nav>
         </div>
       </div>
+
+      <ConfirmDialog
+        open={confirmOpen}
+        onClose={() => setConfirmOpen(false)}
+        onConfirm={confirmLogout}
+        loading={loggingOut}
+        title="Logout"
+        confirmText="Logout"
+        cancelText="Cancel"
+        tone="danger"
+      />
     </header>
   );
 }

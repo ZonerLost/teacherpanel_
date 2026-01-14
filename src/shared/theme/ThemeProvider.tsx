@@ -1,9 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import React from "react";
-
-export type ThemeVariant = "light" | "dark";
-
-const THEME_KEY = "teacher_panel_theme";
+import { applyTheme, getTheme, setTheme as persistTheme, type ThemeVariant } from "../../core/theme/theme";
+export type { ThemeVariant } from "../../core/theme/theme";
 
 type ThemeContextValue = {
   theme: ThemeVariant;
@@ -13,17 +11,8 @@ type ThemeContextValue = {
 
 const ThemeContext = React.createContext<ThemeContextValue | null>(null);
 
-function applyTheme(t: ThemeVariant) {
-  if (typeof document === "undefined") return;
-  const root = document.documentElement;
-  root.setAttribute("data-theme", t);
-  root.classList.toggle("dark", t === "dark");
-}
-
 function readInitialTheme(): ThemeVariant {
-  if (typeof window === "undefined") return "light";
-  const saved = localStorage.getItem(THEME_KEY);
-  const initial = saved === "dark" || saved === "light" ? saved : "light";
+  const initial = getTheme();
   applyTheme(initial);
   return initial;
 }
@@ -33,7 +22,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   const setTheme = React.useCallback((t: ThemeVariant) => {
     setThemeState(t);
-    localStorage.setItem(THEME_KEY, t);
+    persistTheme(t);
     applyTheme(t);
   }, []);
 

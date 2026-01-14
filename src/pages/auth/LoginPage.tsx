@@ -5,37 +5,14 @@ import { Eye, EyeOff } from "lucide-react";
 
 import { ROUTES } from "../../core/router/routes";
 import { useAuth } from "../../core/auth/useAuth";
-
-function useResolvedTheme(): "light" | "dark" {
-  const [t, setT] = React.useState<"light" | "dark">(() => {
-    const ls = localStorage.getItem("theme");
-    if (ls === "dark" || ls === "light") return ls;
-    return document.documentElement.classList.contains("dark") ? "dark" : "light";
-  });
-
-  React.useEffect(() => {
-    const id = window.setInterval(() => {
-      const ls = localStorage.getItem("theme");
-      const next =
-        ls === "dark" || ls === "light"
-          ? ls
-          : document.documentElement.classList.contains("dark")
-          ? "dark"
-          : "light";
-      setT(next);
-    }, 400);
-    return () => window.clearInterval(id);
-  }, []);
-
-  return t;
-}
+import { useTheme } from "../../shared/theme/useTheme";
 
 function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 }
 
 export default function LoginPage() {
-  const theme = useResolvedTheme();
+  const { theme } = useTheme();
   const { login } = useAuth();
 
   const navigate = useNavigate();
@@ -72,16 +49,12 @@ export default function LoginPage() {
 
   const pageBg =
     theme === "dark"
-      ? "bg-[radial-gradient(ellipse_at_top,rgba(124,58,237,0.25),transparent_45%),radial-gradient(ellipse_at_bottom,rgba(99,102,241,0.12),transparent_45%),#07010f]"
+      ? "bg-[#0d0118]"
       : "bg-[#f7f7f7]";
-
-  // Card styling matches screenshot:
-  // - light: grey card, soft shadow, big radius
-  // - dark: glassy purple card with border outline
   const card =
     theme === "dark"
       ? "bg-white/5 border border-violet-300/30 shadow-[0_30px_120px_rgba(0,0,0,0.55)]"
-      : "bg-[#dedede] border border-black/5 shadow-[0_18px_60px_rgba(0,0,0,0.10)]";
+      : "bg-[#190928] border border-black/5 shadow-[0_18px_60px_rgba(0,0,0,0.10)]";
 
   const logoText = theme === "dark" ? "text-violet-500" : "text-[#111827]";
   const labelText = theme === "dark" ? "text-white/80" : "text-slate-700";
@@ -106,7 +79,7 @@ export default function LoginPage() {
         <div className="flex flex-col items-center justify-center gap-2">
           <div className={`text-4xl font-black tracking-tight ${logoText}`}>
             {/* replace with your SVG logo */}
-            ✳ <span className={theme === "dark" ? "text-violet-500" : "text-slate-900"}>EduManage</span>
+            ✳ <span className={theme === "dark" ? "text-#360f90-500" : "text-slate-900"}>EduManage</span>
           </div>
         </div>
 
