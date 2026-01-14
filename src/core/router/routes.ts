@@ -1,4 +1,6 @@
 export const ROUTES = {
+  login: "/login",
+
   dashboard: "/dashboard",
   assignments: "/assignments",
   quizBuilder: "/quiz-builder",

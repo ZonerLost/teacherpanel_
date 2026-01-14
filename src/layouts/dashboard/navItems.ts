@@ -1,4 +1,4 @@
-import { ROUTES, type AppRoutePath } from "../../app/router/routes";
+import { ROUTES, type AppRoutePath } from "../../core/router/routes";
 
 export type NavItem = {
   label: string;

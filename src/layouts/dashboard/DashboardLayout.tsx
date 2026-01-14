@@ -5,13 +5,11 @@ import { useTheme } from "../../shared/theme/useTheme";
 
 export default function DashboardLayout() {
   const { theme } = useTheme();
-  const showNavLinksOnDesktop = theme === "light";
 
   return (
     <div className={theme === "dark" ? "min-h-dvh bg-[#06000F]" : "min-h-dvh bg-slate-50"}>
       <TeacherTopbar
         navItems={NAV_ITEMS}
-        showNavLinksOnDesktop={showNavLinksOnDesktop}
         onLogout={() => console.log("logout")}
       />
 

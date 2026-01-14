@@ -25,7 +25,7 @@ export default function TeacherTopbar({
 }: TeacherTopbarProps) {
   const { theme } = useTheme();
   const isDark = theme === "dark";
-  const shouldShowNavLinks = showNavLinksOnDesktop ?? theme === "light";
+  const shouldShowNavLinks = showNavLinksOnDesktop !== false;
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
   const headerClass = isDark
