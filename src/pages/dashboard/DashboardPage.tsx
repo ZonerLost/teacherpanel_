@@ -1,0 +1,105 @@
+import React from "react";
+import { MetricsToggleBar } from "./components/MetricsToggleBar";
+import { useDashboardMetrics } from "./hooks/useDashboardMetrics";
+import { useResolvedTheme } from "./hooks/useResolvedTheme";
+import { getDashboardVars } from "./dashboard.tokens";
+import {
+  DASHBOARD_DEFAULT_CLASS,
+  CLASSES,
+  comprehensionTrend,
+  vocabularyBars,
+  genreDistribution,
+  consistencyTrend,
+  classGrowthTrend,
+  atRiskRows,
+  topPerformers,
+  leaderboardRows,
+} from "./dashboard.data";
+
+import { AverageComprehensionCard } from "./components/cards/AverageComprehensionCard";
+import { VocabularyEngagementCard } from "./components/cards/VocabularyEngagementCard";
+import { ReadingDistributionCard } from "./components/cards/ReadingDistributionCard";
+import { ReadingConsistencyCard } from "./components/cards/ReadingConsistencyCard";
+import { AtRiskFlagsCard } from "./components/cards/AtRiskFlagsCard";
+import { TopPerformersCard } from "./components/cards/TopPerformersCard";
+import { ClassGrowthCard } from "./components/cards/ClassGrowthCard";
+import { StudentLeaderboardCard } from "./components/cards/StudentLeaderboardCard";
+
+export default function DashboardPage() {
+  const theme = useResolvedTheme();
+  const cardVariant = theme === "dark" ? "glass" : "surface";
+
+  const vars = React.useMemo(() => getDashboardVars(theme), [theme]);
+
+  const [classValue, setClassValue] = React.useState<string>(DASHBOARD_DEFAULT_CLASS);
+  const { toggles, enabled, setMetric } = useDashboardMetrics();
+
+  return (
+    <section
+      style={vars}
+      className="relative rounded-3xl bg-[rgb(var(--page-bg))] p-4 md:p-6"
+    >
+      {/* Background glows to match your dark reference (img3) */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden rounded-3xl">
+        <div className="absolute inset-0 opacity-0 dark:opacity-100">
+          <div className="absolute -left-40 -top-40 h-[520px] w-[520px] rounded-full bg-violet-500/20 blur-3xl" />
+          <div className="absolute -right-44 top-10 h-[520px] w-[520px] rounded-full bg-fuchsia-500/15 blur-3xl" />
+          <div className="absolute right-10 -bottom-48 h-[520px] w-[520px] rounded-full bg-sky-500/10 blur-3xl" />
+        </div>
+
+        <div className="absolute inset-0 opacity-100 dark:opacity-0">
+          <div className="absolute -left-40 -top-40 h-[520px] w-[520px] rounded-full bg-rose-500/10 blur-3xl" />
+          <div className="absolute -right-44 top-10 h-[520px] w-[520px] rounded-full bg-lime-400/10 blur-3xl" />
+        </div>
+      </div>
+
+      <div className="relative z-10 space-y-5">
+        <MetricsToggleBar
+          title="Choose Metrics to Display"
+          toggles={toggles}
+          enabled={enabled}
+          onToggle={setMetric}
+          classValue={classValue}
+          onClassChange={setClassValue}
+          classOptions={CLASSES as unknown as string[]}
+        />
+
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+          {enabled.avgComprehension && (
+            <AverageComprehensionCard theme={theme} variant={cardVariant} valuePct={78} data={comprehensionTrend} />
+          )}
+
+          {enabled.vocabEngagement && (
+            <VocabularyEngagementCard theme={theme} variant={cardVariant} data={vocabularyBars} />
+          )}
+
+          {enabled.readingDistribution && (
+            <ReadingDistributionCard theme={theme} variant={cardVariant} data={genreDistribution} />
+          )}
+
+          {enabled.readingConsistency && (
+            <ReadingConsistencyCard theme={theme} variant={cardVariant} data={consistencyTrend} />
+          )}
+
+          {enabled.atRiskFlags && (
+            <AtRiskFlagsCard theme={theme} variant={cardVariant} rows={atRiskRows} />
+          )}
+
+          {enabled.topPerformers && (
+            <TopPerformersCard theme={theme} variant={cardVariant} performers={topPerformers} />
+          )}
+
+          {/* bottom-left */}
+          {enabled.classGrowth && (
+            <ClassGrowthCard theme={theme} variant={cardVariant} data={classGrowthTrend} />
+          )}
+
+          {/* bottom-middle (matches your reference). IMPORTANT: no col-span-2. */}
+          {enabled.leaderboard && (
+            <StudentLeaderboardCard theme={theme} variant={cardVariant} rows={leaderboardRows} />
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
