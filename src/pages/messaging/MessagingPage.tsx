@@ -1,8 +1,7 @@
 import React from "react";
-import { Facebook, Linkedin, Twitter, Youtube } from "lucide-react";
 import { useResolvedTheme } from "../dashboard/hooks/useResolvedTheme";
 import { cn } from "../../shared/utils/cn";
-
+import { ModuleFooter } from "../../shared/components/ModuleFooter";
 import type { ChatMessage, Conversation } from "./messaging.types";
 import { initialConversations, initialMessages } from "./messaging.data";
 
@@ -95,10 +94,10 @@ export default function MessagingPage() {
       prev.map((c) =>
         c.id === activeId
           ? {
-              ...c,
-              lastMessageText: text,
-              lastMessageAt: msg.createdAt,
-            }
+            ...c,
+            lastMessageText: text,
+            lastMessageAt: msg.createdAt,
+          }
           : c
       )
     );
@@ -166,20 +165,13 @@ export default function MessagingPage() {
         </div>
       </div>
 
-      {/* Footer bar like your UI */}
-      <div className="flex items-center justify-between border-t border-[rgb(var(--border))] pt-3 text-xs text-[rgb(var(--muted))]">
-        <div className="flex items-center gap-6">
-          <span>Company</span>
-          <span>Resources</span>
-          <span>Legal</span>
-        </div>
 
-        <div className="flex items-center gap-4">
-          <Facebook className="h-4 w-4" />
-          <Twitter className="h-4 w-4" />
-          <Linkedin className="h-4 w-4" />
-          <Youtube className="h-4 w-4" />
-        </div>
+      <div className="flex items-center justify-between border-t border-[rgb(var(--border))] pt-3 text-xs text-[rgb(var(--muted))]">
+        <ModuleFooter
+          theme="dark"
+          className="w-full"
+          containerClassName="max-w-screen-2xl"
+        />
       </div>
 
       {/* Modals */}

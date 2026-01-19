@@ -3,6 +3,7 @@ import type { AtRiskRow, Performer, LeaderboardRow } from "./dashboard.types";
 export const DASHBOARD_DEFAULT_CLASS = "All students";
 
 export const CLASSES = ["All students", "Grade 5 - A", "Grade 5 - B", "Grade 6 - A"] as const;
+export type ClassName = (typeof CLASSES)[number];
 
 export const comprehensionTrend = [
   { week: "Week 1", score: 62 },

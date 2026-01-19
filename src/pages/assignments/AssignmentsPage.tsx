@@ -15,7 +15,7 @@ import { DraftSavedToast } from "./components/DraftSavedToast";
 
 import { AddItemModal } from "./components/modals/AddItemModal";
 import { PublishConfirmModal } from "./components/modals/PublishConfirmModal";
-
+import { ModuleFooter } from "../../shared/components/ModuleFooter";
 export default function AssignmentsPage() {
   const theme = useResolvedTheme();
   const variant = theme === "dark" ? "glass" : "surface";
@@ -288,6 +288,11 @@ export default function AssignmentsPage() {
           </div>
         ) : null}
       </Card>
+      <ModuleFooter
+              theme={theme}
+              className="w-full"
+              containerClassName="max-w-screen-2xl"
+            />
 
       {/* Modals */}
       <AddItemModal open={addOpen} onClose={() => setAddOpen(false)} theme={theme} onAdd={addItem} />

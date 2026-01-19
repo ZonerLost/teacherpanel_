@@ -1,6 +1,6 @@
 import React from "react";
 import { ConfirmDialog } from "../../shared/ui";
-import { useResolvedTheme } from "../dashboard/hooks/useResolvedTheme"; 
+import { useResolvedTheme } from "../dashboard/hooks/useResolvedTheme";
 import type { QuizConfig, GeneratedQuestion } from "./quizBuilder.types";
 import { defaultPrompt, mockGenerateQuestions } from "./quizBuilder.data";
 
@@ -9,7 +9,7 @@ import { GeneratedQuestionsPanel } from "./components/GeneratedQuestionsPanel";
 import { GenerateQuestionsModal } from "./components/modals/GenerateQuestionsModal";
 import { SaveQuizModal } from "./components/modals/SaveQuizModal";
 import { EditQuestionModal } from "./components/modals/EditQuestionModal";
-
+import { ModuleFooter } from "../../shared/components/ModuleFooter";
 export default function QuizBuilderPage() {
   const theme = useResolvedTheme();
   const variant = theme === "dark" ? "glass" : "surface";
@@ -92,8 +92,13 @@ export default function QuizBuilderPage() {
           onDelete={onDelete}
           theme={theme}
         />
-      </div>
 
+      </div>
+      <ModuleFooter
+        theme={theme}
+        className="w-full"
+        containerClassName="max-w-screen-2xl"
+      />
       {/* Modals */}
       <GenerateQuestionsModal
         open={generateOpen}

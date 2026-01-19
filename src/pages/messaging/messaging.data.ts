@@ -6,7 +6,12 @@ const iso = (d: Date) => d.toISOString();
 export const initialConversations: Conversation[] = [
   {
     id: "c1",
-    participant: { id: "p1", name: "Sarah Chen", subtitle: "Parent of Ethan Chen", avatarUrl: "" },
+    participant: {
+      id: "p1",
+      name: "Sarah Chen",
+      subtitle: "Parent of Ethan Chen",
+      avatarUrl: "https://i.pravatar.cc/150?img=12",
+    },
     lastMessageText: "Thank you for the update!",
     lastMessageAt: iso(new Date(now.getTime() - 30 * 60 * 1000)),
     unreadCount: 0,
@@ -14,7 +19,12 @@ export const initialConversations: Conversation[] = [
   },
   {
     id: "c2",
-    participant: { id: "p2", name: "David Lee", subtitle: "Parent", avatarUrl: "" },
+    participant: {
+      id: "p2",
+      name: "David Lee",
+      subtitle: "Parent",
+      avatarUrl: "https://i.pravatar.cc/150?img=22",
+    },
     lastMessageText: "Ethan loved the new reading activity",
     lastMessageAt: iso(new Date(now.getTime() - 24 * 60 * 60 * 1000)),
     unreadCount: 1,
@@ -22,7 +32,12 @@ export const initialConversations: Conversation[] = [
   },
   {
     id: "c3",
-    participant: { id: "p3", name: "Maria Garcia", subtitle: "Parent", avatarUrl: "" },
+    participant: {
+      id: "p3",
+      name: "Maria Garcia",
+      subtitle: "Parent",
+      avatarUrl: "https://i.pravatar.cc/150?img=35",
+    },
     lastMessageText: "I’ll make sure to review the vocabulary.",
     lastMessageAt: iso(new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000)),
     unreadCount: 0,
@@ -30,7 +45,12 @@ export const initialConversations: Conversation[] = [
   },
   {
     id: "c4",
-    participant: { id: "p4", name: "Emily White", subtitle: "Parent", avatarUrl: "" },
+    participant: {
+      id: "p4",
+      name: "Emily White",
+      subtitle: "Parent",
+      avatarUrl: "https://i.pravatar.cc/150?img=45",
+    },
     lastMessageText: "Could we schedule a quick call?",
     lastMessageAt: iso(new Date(now.getTime() - 8 * 24 * 60 * 60 * 1000)),
     unreadCount: 2,
@@ -38,7 +58,12 @@ export const initialConversations: Conversation[] = [
   },
   {
     id: "c5",
-    participant: { id: "p5", name: "Robert Johnson", subtitle: "Parent", avatarUrl: "" },
+    participant: {
+      id: "p5",
+      name: "Robert Johnson",
+      subtitle: "Parent",
+      avatarUrl: "https://i.pravatar.cc/150?img=52",
+    },
     lastMessageText: "Acknowledged. I’ll discuss with him.",
     lastMessageAt: iso(new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000)),
     unreadCount: 0,
@@ -46,7 +71,12 @@ export const initialConversations: Conversation[] = [
   },
   {
     id: "c6",
-    participant: { id: "p6", name: "Jessica Davis", subtitle: "Parent", avatarUrl: "" },
+    participant: {
+      id: "p6",
+      name: "Jessica Davis",
+      subtitle: "Parent",
+      avatarUrl: "https://i.pravatar.cc/150?img=60",
+    },
     lastMessageText: "I've noticed significant improvement!",
     lastMessageAt: iso(new Date(now.getTime() - 35 * 24 * 60 * 60 * 1000)),
     unreadCount: 0,

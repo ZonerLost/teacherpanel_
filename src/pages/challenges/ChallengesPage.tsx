@@ -1,5 +1,5 @@
 import React from "react";
-import { Facebook, Linkedin, Twitter, Youtube } from "lucide-react";
+
 import { useResolvedTheme } from "../dashboard/hooks/useResolvedTheme";
 import type { Challenge } from "./challenges.types";
 import { initialAchievements, initialChallenges, leaderboardDatasets } from "./challenges.data";
@@ -9,7 +9,7 @@ import { LeaderboardSection } from "./components/LeaderboardSection";
 import { RecentAchievements } from "./components/RecentAchievements";
 import { CreateChallengeModal } from "./components/modals/CreateChallengeModal";
 import { ChallengeDetailsModal } from "./components/modals/ChallengeDetailsModal";
-
+import { ModuleFooter } from "../../shared/components/ModuleFooter";
 export default function ChallengesPage() {
   const theme = useResolvedTheme();
   const variant = theme === "dark" ? "glass" : "surface";
@@ -65,18 +65,11 @@ export default function ChallengesPage() {
 
       {/* Footer (same as your other modules) */}
       <div className="flex items-center justify-between border-t border-[rgb(var(--border))] pt-3 text-xs text-[rgb(var(--muted))]">
-        <div className="flex items-center gap-6">
-          <span>Company</span>
-          <span>Resources</span>
-          <span>Legal</span>
-        </div>
-
-        <div className="flex items-center gap-4">
-          <Facebook className="h-4 w-4" />
-          <Twitter className="h-4 w-4" />
-          <Linkedin className="h-4 w-4" />
-          <Youtube className="h-4 w-4" />
-        </div>
+    <ModuleFooter
+            theme={theme}
+            className="w-full"
+            containerClassName="max-w-screen-2xl"
+          />
       </div>
 
       {/* Modals */}

@@ -73,7 +73,7 @@ export function ChallengeCard({ challenge, theme, onViewDetails }: Props) {
       <div className="mt-3">
         <Button
           variant="ghost"
-          className={cn("w-full rounded-xl", btn)}
+          className={cn("w-full  rounded-xl", btn)}
           onClick={() => onViewDetails(challenge)}
         >
           View Details

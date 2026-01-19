@@ -1,8 +1,10 @@
+import React from "react";
 import { ArrowLeft, Info } from "lucide-react";
 import { Card } from "../../../shared/ui";
 import type { ChatMessage, Conversation } from "../messaging.types";
 import { ChatMessages } from "./ChatMessages";
 import { ChatComposer } from "./ChatComposer";
+import { cn } from "../../../shared/utils/cn";
 
 type Props = {
   variant: "surface" | "glass";
@@ -21,6 +23,43 @@ type Props = {
   onBack?: () => void;
 };
 
+function Avatar({
+  name,
+  url,
+  sizeClass = "h-10 w-10",
+}: {
+  name: string;
+  url?: string | null;
+  sizeClass?: string;
+}) {
+  const [ok, setOk] = React.useState(true);
+
+  return (
+    <div
+      className={cn(
+        "relative overflow-hidden rounded-full bg-[rgb(var(--surface-2))] ring-1 ring-[rgb(var(--border))]",
+        sizeClass
+      )}
+    >
+      {url && ok ? (
+        <img
+          src={url}
+          alt={name}
+          className="h-full w-full object-cover"
+          loading="lazy"
+          decoding="async"
+          referrerPolicy="no-referrer"
+          onError={() => setOk(false)}
+        />
+      ) : (
+        <div className="grid h-full w-full place-items-center text-sm font-semibold text-[rgb(var(--muted))]">
+          {name?.slice(0, 1)?.toUpperCase() || "?"}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function ChatPanel({
   variant,
   theme,
@@ -34,6 +73,10 @@ export function ChatPanel({
   showBack,
   onBack,
 }: Props) {
+  const name = activeConversation?.participant.name ?? "Select a conversation";
+  const subtitle = activeConversation?.participant.subtitle ?? " ";
+  const avatarUrl = activeConversation?.participant.avatarUrl || undefined;
+
   return (
     <Card variant={variant} className="flex h-[680px] flex-col overflow-hidden p-0">
       {/* header */}
@@ -50,15 +93,12 @@ export function ChatPanel({
             </button>
           ) : null}
 
-          <div className="h-10 w-10 rounded-full bg-[rgb(var(--surface-2))]" />
+          {/* avatar */}
+          <Avatar name={name} url={avatarUrl} />
 
           <div className="min-w-0">
-            <div className="truncate text-sm font-bold text-[rgb(var(--text))]">
-              {activeConversation?.participant.name ?? "Select a conversation"}
-            </div>
-            <div className="truncate text-xs text-[rgb(var(--muted))]">
-              {activeConversation?.participant.subtitle ?? " "}
-            </div>
+            <div className="truncate text-sm font-bold text-[rgb(var(--text))]">{name}</div>
+            <div className="truncate text-xs text-[rgb(var(--muted))]">{subtitle}</div>
           </div>
         </div>
 

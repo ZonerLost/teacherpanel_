@@ -1,6 +1,7 @@
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Bell, Menu, Search, X } from "lucide-react";
+
 import { ConfirmDialog, ThemeToggleButton } from "../../shared/ui";
 import { useTheme } from "../../shared/theme/useTheme";
 import { useAuth } from "../../core/auth/useAuth";
@@ -14,14 +15,17 @@ type TeacherTopbarProps = {
   avatarUrl?: string;
 };
 
+const LOGO_LIGHT_SRC = "/images/loginlight.png";
+const LOGO_DARK_SRC = "/images/logindark.png";
+
+const FALLBACK_AVATAR = "https://i.pravatar.cc/120?img=32";
+const BRAND_NAME = "EduManage";
+
 const baseLink =
-  "relative text-sm font-medium transition-colors after:absolute after:left-0 after:-bottom-2 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:transition-transform hover:after:scale-x-100";
-
-const LOGO_LIGHT_SRC = "/images/lightlogo.png"; 
-const LOGO_DARK_SRC = "/images/topbarlogo.png"; 
-
-const FALLBACK_AVATAR_LIGHT = "https://i.pravatar.cc/120?img=32"; 
-const FALLBACK_AVATAR_DARK = "https://i.pravatar.cc/120?img=32"; 
+  "relative px-1 py-2 text-sm font-medium transition-colors " +
+  "after:absolute after:left-0 after:-bottom-2 after:h-[2px] after:w-full " +
+  "after:origin-left after:scale-x-0 after:transition-transform " +
+  "hover:after:scale-x-100";
 
 export default function TeacherTopbar({
   navItems,
@@ -34,7 +38,6 @@ export default function TeacherTopbar({
   const { theme } = useTheme();
   const isDark = theme === "dark";
 
-  // ✅ show desktop links in both themes by default
   const shouldShowNavLinks = showNavLinksOnDesktop !== false;
 
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -57,70 +60,89 @@ export default function TeacherTopbar({
     }
   };
 
+  // ✅ Requested hover colors
+  const accent = isDark ? "#a43be0" : "#a4de02";
+  const accentRing = isDark ? "rgba(164,59,224,0.35)" : "rgba(164,222,2,0.35)";
+
   const headerClass = isDark
     ? "border-[rgb(var(--border))] bg-gradient-to-r from-[#0B0017] via-[#140026] to-[#0B0017] text-[rgb(var(--text))]"
     : "border-[rgb(var(--border))] bg-[rgb(var(--surface))] text-[rgb(var(--text))]";
 
-  const containerClass = "mx-auto flex h-[72px] items-center gap-3 px-4 sm:px-6 lg:px-8";
+  const containerClass =
+    "mx-auto flex h-[64px] sm:h-[72px] items-center gap-2 sm:gap-3 px-3 sm:px-6 lg:px-8";
 
   const searchWrapClass = "border-[rgb(var(--border))] bg-[rgb(var(--surface-2))]";
   const searchInputClass = "text-[rgb(var(--text))] placeholder:text-[rgb(var(--muted))]";
-  const iconBtnClass = "text-[rgb(var(--muted))] hover:bg-[rgb(var(--surface-2))]";
+
+  const iconBtnClass =
+    "text-[rgb(var(--muted))] hover:bg-[rgb(var(--surface-2))] " +
+    "focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 " +
+    "focus-visible:ring-[var(--nav-accent-ring)]";
 
   const logoutBtnClass = isDark
     ? "border border-violet-300/30 bg-white/5 text-white/70 hover:bg-white/10"
     : "bg-red-500 text-white hover:bg-red-600";
 
-  // ✅ If you still want colored brand text
-  const logoColor = isDark ? "text-violet-300" : "text-lime-600";
-
-  const activeLinkClass = "text-[rgb(var(--text))] after:bg-[rgb(var(--primary))] after:scale-x-100";
-  const inactiveLinkClass =
-    "text-[rgb(var(--muted))] hover:text-[rgb(var(--text))] after:bg-[rgb(var(--primary))] after:opacity-0 hover:after:opacity-100";
-
-  const finalAvatarSrc = avatarUrl || (isDark ? FALLBACK_AVATAR_DARK : FALLBACK_AVATAR_LIGHT);
+  const finalAvatarSrc = avatarUrl || FALLBACK_AVATAR;
   const finalLogoSrc = isDark ? LOGO_DARK_SRC : LOGO_LIGHT_SRC;
 
+  const brandTextClass = isDark ? "text-[#360f90]" : "text-[#1dc200]";
+
+  // ✅ Link classes using CSS vars (works with Tailwind)
+  const activeLinkClass =
+    "text-[var(--nav-accent)] after:bg-[var(--nav-accent)] after:scale-x-100";
+  const inactiveLinkClass =
+    "text-[rgb(var(--muted))] hover:text-[var(--nav-accent)] after:bg-[var(--nav-accent)] " +
+    "after:opacity-0 hover:after:opacity-100";
+
   return (
-    <header className={`sticky top-0 z-40 w-full border-b ${headerClass}`}>
+    <header
+      className={`sticky top-0 z-40 w-full border-b ${headerClass}`}
+      style={
+        {
+          // ✅ Dynamic values applied here
+          "--nav-accent": accent,
+          "--nav-accent-ring": accentRing,
+        } as React.CSSProperties
+      }
+    >
       <div className={containerClass}>
         {/* Mobile menu button */}
         <button
           type="button"
           onClick={() => setMobileOpen(true)}
-          className={`inline-flex h-10 w-10 items-center justify-center rounded-xl transition lg:hidden ${iconBtnClass}`}
+          className={`inline-flex h-10 w-10 items-center justify-center rounded-xl transition md:hidden ${iconBtnClass}`}
           aria-label="Open menu"
         >
           <Menu className="h-5 w-5" />
         </button>
 
-        {/* ✅ Logo (two src: light/dark) */}
+        {/* Logo (MARK + TEXT) */}
         <div className="flex items-center gap-2">
-          <div
-            className={["grid h-9 w-9 place-items-center overflow-hidden rounded-xl", isDark ? "bg-white/5" : "bg-slate-100"].join(
-              " "
-            )}
-          >
+          <div className="h-9 w-9 overflow-hidden">
             <img
               src={finalLogoSrc}
               alt="Logo"
-              className="h-full w-full object-contain"
+              className={`h-full w-full object-contain ${isDark ? "drop-shadow-[0_0_14px_rgba(164,59,224,0.35)]" : ""
+                }`}
               loading="lazy"
               decoding="async"
+              draggable={false}
               onError={(e) => {
-                // Optional: if logo fails, keep the box but avoid broken icon
                 e.currentTarget.style.display = "none";
               }}
             />
           </div>
 
-          {/* Optional brand text - remove if you want image-only */}
-          <span className={`text-lg font-semibold tracking-tight ${logoColor}`}>Edu Manage</span>
+          {/* Hide brand text on very small screens */}
+          <span className={`hidden sm:inline text-lg font-bold tracking-tight ${brandTextClass}`}>
+            {BRAND_NAME}
+          </span>
         </div>
 
-        {/* Desktop nav links */}
+        {/* Desktop nav links (tablet + laptop) */}
         {shouldShowNavLinks && (
-          <nav className="hidden flex-1 items-center justify-center gap-7 lg:flex">
+          <nav className="hidden flex-1 items-center justify-center gap-6 md:flex lg:gap-7">
             {navItems.map((item) => (
               <NavLink
                 key={item.path}
@@ -137,9 +159,9 @@ export default function TeacherTopbar({
 
         {/* Right area */}
         <div className="ml-auto flex items-center gap-2">
-          {/* Search (desktop) */}
+          {/* Search (show on laptop+) */}
           <div className="hidden lg:block">
-            <div className={`relative h-11 w-[360px] rounded-2xl border ${searchWrapClass}`}>
+            <div className={`relative h-11 w-[320px] xl:w-[360px] rounded-2xl border ${searchWrapClass}`}>
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[rgb(var(--muted))]" />
               <input
                 className={`h-full w-full rounded-2xl bg-transparent pl-10 pr-3 text-sm outline-none ${searchInputClass}`}
@@ -157,7 +179,7 @@ export default function TeacherTopbar({
             <Bell className="h-5 w-5 text-[rgb(var(--muted))]" />
           </button>
 
-          {/* Logout */}
+          {/* Logout (hide on xs, show on sm+) */}
           <button
             type="button"
             onClick={handleLogout}
@@ -171,7 +193,7 @@ export default function TeacherTopbar({
           {/* Theme toggle */}
           <ThemeToggleButton />
 
-          {/* ✅ Avatar (two src: light/dark fallback) */}
+          {/* Avatar */}
           <div className={`h-10 w-10 overflow-hidden rounded-full ${isDark ? "ring-2 ring-white/10" : ""}`}>
             <img
               src={finalAvatarSrc}
@@ -181,8 +203,7 @@ export default function TeacherTopbar({
               decoding="async"
               referrerPolicy="no-referrer"
               onError={(e) => {
-                const img = e.currentTarget;
-                img.src = isDark ? FALLBACK_AVATAR_DARK : FALLBACK_AVATAR_LIGHT;
+                e.currentTarget.src = FALLBACK_AVATAR;
               }}
             />
           </div>
@@ -193,7 +214,7 @@ export default function TeacherTopbar({
       {isDark && <div className="h-[4px] w-full bg-gradient-to-r from-transparent via-violet-700/35 to-transparent" />}
 
       {/* Mobile menu overlay + panel */}
-      <div className={["fixed inset-0 z-50 lg:hidden", mobileOpen ? "" : "pointer-events-none"].join(" ")}>
+      <div className={["fixed inset-0 z-50 md:hidden", mobileOpen ? "" : "pointer-events-none"].join(" ")}>
         <div
           className={[
             "absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity",
@@ -224,11 +245,7 @@ export default function TeacherTopbar({
           {/* Mobile search */}
           <div className="mt-3">
             <div className={`relative h-11 w-full rounded-2xl border ${searchWrapClass}`}>
-              <Search
-                className={`absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 ${
-                  isDark ? "text-white/55" : "text-slate-600"
-                }`}
-              />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[rgb(var(--muted))]" />
               <input
                 className={`h-full w-full rounded-2xl bg-transparent pl-10 pr-3 text-sm outline-none ${searchInputClass}`}
                 placeholder="Search for students, assignment"
@@ -247,12 +264,10 @@ export default function TeacherTopbar({
                   [
                     "rounded-2xl px-4 py-3 text-sm font-medium transition",
                     isActive
-                      ? isDark
-                        ? "bg-white/10 text-white"
-                        : "bg-lime-500/10 text-lime-700"
+                      ? "text-[var(--nav-accent)] ring-1 ring-[var(--nav-accent-ring)] bg-black/5"
                       : isDark
-                      ? "text-white/75 hover:bg-white/5 hover:text-white"
-                      : "text-slate-700 hover:bg-slate-100 hover:text-slate-900",
+                        ? "text-white/75 hover:bg-white/5 hover:text-[var(--nav-accent)]"
+                        : "text-slate-700 hover:bg-slate-100 hover:text-[var(--nav-accent)]",
                   ].join(" ")
                 }
               >
@@ -260,6 +275,16 @@ export default function TeacherTopbar({
               </NavLink>
             ))}
           </nav>
+
+          {/* Mobile Logout */}
+          <button
+            type="button"
+            onClick={handleLogout}
+            className={`mt-4 w-full h-11 rounded-2xl text-sm font-semibold transition ${logoutBtnClass}`}
+            disabled={loggingOut}
+          >
+            {loggingOut ? "Logging out..." : "Logout"}
+          </button>
         </div>
       </div>
 

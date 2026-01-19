@@ -4,7 +4,7 @@ import type { ReportFilters, ReportRow } from "./reports.types";
 
 import { ReportsFilterCard } from "./components/ReportsFilterCard";
 import { ReportsOverviewCard } from "./components/ReportsOverviewCard";
-
+import { ModuleFooter } from "../../shared/components/ModuleFooter";
 import { DEFAULT_FILTERS, INITIAL_REPORTS, CLASSES, STUDENTS, ASSIGNMENTS, REPORT_TYPES } from "./reports.data";
 import { exportReportsCsv } from "./utils/exportCsv";
 import { exportReportPdf } from "./utils/exportPdf";
@@ -83,6 +83,11 @@ export default function ReportsPage() {
           onPreview={handlePreviewRow}
         />
       </div>
+      <ModuleFooter
+        theme={theme}
+        className="w-full"
+        containerClassName="max-w-screen-2xl"
+      />
 
       {/* Modals */}
       <GeneratePdfModal
