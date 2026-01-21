@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React from "react";
 import { Card, Button } from "../../../shared/ui";
 import { cn } from "../../../shared/utils/cn";
@@ -10,19 +9,19 @@ type Props = {
 };
 
 export function ChallengesHero({ variant, theme, onCreate }: Props) {
-  const primary =
-    theme === "dark"
-      ? "bg-violet-700 text-white hover:bg-violet-800"
-      : "bg-orange-500 text-white hover:bg-orange-600";
-
   // Match screenshot: muted lavender in dark, pale green in light
   const heroBg = theme === "dark" ? "bg-[#b2a6c4]" : "bg-[#cfd7b6]";
 
-  // Placeholder (replace later). Stable random via seed (no hydration flicker).
-  const illustrationUrl = React.useMemo(() => {
-    // const seed = theme === "dark" ? "reading-race-dark" : "reading-race-light";
-    return `/images/chall.png`;
-  }, [theme]);
+  // 🔥 Force-fill CTA styles (wins over Button's variant styles)
+  const ctaClass = cn(
+    "rounded-full px-6 py-3 text-sm font-semibold shadow-sm transition",
+    "hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20",
+    theme === "dark"
+      ? "!bg-violet-700 !text-white hover:!bg-violet-800"
+      : "!bg-orange-500 !text-white hover:!bg-orange-600"
+  );
+
+  const illustrationUrl = React.useMemo(() => "/images/chall.png", []);
 
   return (
     <Card
@@ -47,13 +46,11 @@ export function ChallengesHero({ variant, theme, onCreate }: Props) {
 
           <div className="mt-5">
             <Button
+              // keep ghost if you want shared sizing/padding behavior,
+              // but our !bg-* will override any transparent styles.
               variant="ghost"
               onClick={onCreate}
-              className={cn(
-                primary,
-                "rounded-full px-6 py-3  text-sm font-semibold shadow-sm",
-                "hover:[shadow-md]"
-              )}
+              className={ctaClass}
             >
               Create New Challenge
             </Button>
@@ -66,8 +63,7 @@ export function ChallengesHero({ variant, theme, onCreate }: Props) {
             className={cn(
               "relative overflow-hidden",
               "h-[150px] w-[220px] sm:h-[175px] sm:w-[260px]",
-              "rounded-2xl bg-white",
-              "p-4 shadow-sm ring-1 ring-black/5"
+              "rounded-2xl bg-white p-4 shadow-sm ring-1 ring-black/5"
             )}
           >
             <img

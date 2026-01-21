@@ -41,13 +41,15 @@ export function ChallengeCard({ challenge, theme, onViewDetails }: Props) {
   const btn =
     theme === "dark"
       ? "bg-transparent border border-white/15 text-white/90 hover:bg-white/10"
-      : "bg-lime-400 text-black hover:bg-lime-300";
+      : "!bg-lime-400 !text-black hover:!bg-lime-300 !border !border-black/10";
 
   return (
     <div className="rounded-2xl border border-[rgb(var(--border))] bg-[rgb(var(--surface))] p-4">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <div className="truncate text-sm font-bold text-[rgb(var(--text))]">{challenge.title}</div>
+          <div className="truncate text-sm font-bold text-[rgb(var(--text))]">
+            {challenge.title}
+          </div>
           <div className="mt-2 flex items-center gap-3 text-xs text-[rgb(var(--muted))]">
             <span className="inline-flex items-center gap-1">
               <Users className="h-3.5 w-3.5" />
@@ -73,7 +75,11 @@ export function ChallengeCard({ challenge, theme, onViewDetails }: Props) {
       <div className="mt-3">
         <Button
           variant="ghost"
-          className={cn("w-full  rounded-xl", btn)}
+          className={cn(
+            "w-full rounded-xl px-4 py-2.5 font-semibold shadow-sm transition",
+            "hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20",
+            btn
+          )}
           onClick={() => onViewDetails(challenge)}
         >
           View Details
@@ -82,3 +88,4 @@ export function ChallengeCard({ challenge, theme, onViewDetails }: Props) {
     </div>
   );
 }
+
