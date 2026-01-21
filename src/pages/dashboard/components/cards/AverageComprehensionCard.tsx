@@ -18,7 +18,7 @@ export function AverageComprehensionCard({ theme, variant, valuePct, data }: Pro
     <Card
       variant={variant}
       className={cn(
-        "p-5",
+        "p-4 sm:p-5",
         "border-[rgb(var(--border))]",
         theme === "dark"
           ? "bg-[rgb(var(--surface)_/_0.55)] backdrop-blur-xl shadow-[0_18px_60px_rgba(0,0,0,0.45)]"
@@ -30,7 +30,7 @@ export function AverageComprehensionCard({ theme, variant, valuePct, data }: Pro
         <CardDescription>Overall class understanding</CardDescription>
       </CardHeader>
 
-      <div className="mt-2 flex items-center justify-between">
+      <div className="mt-2 flex items-center justify-between gap-3">
         <div className="text-xs text-[rgb(var(--muted))]">Current Class Average</div>
         <div className="text-sm font-bold text-[rgb(var(--text))]">{valuePct}%</div>
       </div>
@@ -39,12 +39,15 @@ export function AverageComprehensionCard({ theme, variant, valuePct, data }: Pro
         <div className="h-2 rounded-full bg-[rgb(var(--chart))]" style={{ width: `${valuePct}%` }} />
       </div>
 
-      <div className="mt-4 h-[180px] w-full">
+      <div className="mt-4 h-[160px] sm:h-[180px] md:h-[200px] w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data}>
+          <LineChart
+            data={data}
+            margin={{ top: 8, right: 8, bottom: 0, left: 0 }}
+          >
             <CartesianGrid stroke={grid} vertical={false} />
             <XAxis dataKey="week" tick={{ fill: axis, fontSize: 11 }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fill: axis, fontSize: 11 }} axisLine={false} tickLine={false} width={28} />
+            <YAxis tick={{ fill: axis, fontSize: 11 }} axisLine={false} tickLine={false} width={30} />
             <Tooltip
               contentStyle={{
                 background: "rgb(var(--surface))",

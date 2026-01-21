@@ -18,7 +18,7 @@ export function TopPerformersCard({ theme, variant, performers }: Props) {
     <Card
       variant={variant}
       className={cn(
-        "p-5",
+        "p-4 sm:p-5",
         "border-[rgb(var(--border))]",
         theme === "dark"
           ? "bg-[rgb(var(--surface)_/_0.55)] backdrop-blur-xl shadow-[0_18px_60px_rgba(0,0,0,0.45)]"
@@ -34,20 +34,24 @@ export function TopPerformersCard({ theme, variant, performers }: Props) {
         {performers.map((p) => (
           <div
             key={p.name}
-            className={cn("flex items-center justify-between rounded-2xl border px-3 py-3", performerBox)}
+            className={cn(
+              "min-w-0 flex items-center justify-between gap-3 rounded-2xl border px-3 py-3",
+              performerBox
+            )}
           >
-            <div className="flex items-center gap-2">
+            <div className="min-w-0 flex items-center gap-2">
               <div
                 className={cn(
-                  "flex h-8 w-8 items-center justify-center rounded-xl",
+                  "flex h-8 w-8 shrink-0 items-center justify-center rounded-xl",
                   theme === "light" ? "bg-white/15" : "bg-[rgb(var(--surface))]"
                 )}
               >
                 <span className="text-sm">{p.badge}</span>
               </div>
-              <div>
-                <div className="text-xs font-semibold">{p.name}</div>
-                <div className={cn("text-[11px]", theme === "light" ? "text-white/85" : "text-[rgb(var(--muted))]")}>
+
+              <div className="min-w-0">
+                <div className="truncate text-xs font-semibold">{p.name}</div>
+                <div className={cn("truncate text-[11px]", theme === "light" ? "text-white/85" : "text-[rgb(var(--muted))]")}>
                   {p.subtitle}
                 </div>
               </div>

@@ -168,7 +168,7 @@ export default function MessagingPage() {
 
       <div className="flex items-center justify-between border-t border-[rgb(var(--border))] pt-3 text-xs text-[rgb(var(--muted))]">
         <ModuleFooter
-          theme="dark"
+          theme={theme}
           className="w-full"
           containerClassName="max-w-screen-2xl"
         />

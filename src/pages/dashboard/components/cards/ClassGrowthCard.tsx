@@ -17,7 +17,7 @@ export function ClassGrowthCard({ theme, variant, data }: Props) {
     <Card
       variant={variant}
       className={cn(
-        "p-5",
+        "p-4 sm:p-5",
         "border-[rgb(var(--border))]",
         theme === "dark"
           ? "bg-[rgb(var(--surface)_/_0.55)] backdrop-blur-xl shadow-[0_18px_60px_rgba(0,0,0,0.45)]"
@@ -29,12 +29,12 @@ export function ClassGrowthCard({ theme, variant, data }: Props) {
         <CardDescription>Overall progress of the class’s learning journey</CardDescription>
       </CardHeader>
 
-      <div className="mt-4 h-[220px] w-full">
+      <div className="mt-4 h-[190px] sm:h-[220px] md:h-[240px] w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={data}>
+          <AreaChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
             <CartesianGrid stroke={grid} vertical={false} />
             <XAxis dataKey="month" tick={{ fill: axis, fontSize: 11 }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fill: axis, fontSize: 11 }} axisLine={false} tickLine={false} width={28} />
+            <YAxis tick={{ fill: axis, fontSize: 11 }} axisLine={false} tickLine={false} width={30} />
             <Tooltip
               contentStyle={{
                 background: "rgb(var(--surface))",
@@ -43,13 +43,7 @@ export function ClassGrowthCard({ theme, variant, data }: Props) {
               }}
               labelStyle={{ color: "rgb(var(--muted))" }}
             />
-            <Area
-              type="monotone"
-              dataKey="avg"
-              stroke="rgb(var(--chart))"
-              fill="rgb(var(--chart))"
-              fillOpacity={0.18}
-            />
+            <Area type="monotone" dataKey="avg" stroke="rgb(var(--chart))" fill="rgb(var(--chart))" fillOpacity={0.18} />
           </AreaChart>
         </ResponsiveContainer>
       </div>

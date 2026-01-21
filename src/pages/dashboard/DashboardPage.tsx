@@ -27,12 +27,9 @@ import { ClassGrowthCard } from "./components/cards/ClassGrowthCard";
 import { StudentLeaderboardCard } from "./components/cards/StudentLeaderboardCard";
 
 function pickByClass<T>(all: T[], classValue: ClassName) {
-  // ✅ demo filter behavior (replace with real backend filter later)
   if (classValue === "All students") return all;
-
-  // stable slicing per class
   const idx = Math.max(1, CLASSES.indexOf(classValue));
-  const size = Math.max(2, Math.min(all.length, 2 + (idx % 3))); // 2..4 items
+  const size = Math.max(2, Math.min(all.length, 2 + (idx % 3)));
   return all.slice(0, size);
 }
 
@@ -44,13 +41,15 @@ export default function DashboardPage() {
   const [classValue, setClassValue] = React.useState<ClassName>(DASHBOARD_DEFAULT_CLASS);
   const { toggles, enabled, setMetric } = useDashboardMetrics();
 
-  // ✅ apply filter (demo)
   const filteredAtRisk = React.useMemo(() => pickByClass(atRiskRows, classValue), [classValue]);
   const filteredPerformers = React.useMemo(() => pickByClass(topPerformers, classValue), [classValue]);
   const filteredLeaderboard = React.useMemo(() => pickByClass(leaderboardRows, classValue), [classValue]);
 
   return (
-    <section style={vars} className="relative rounded-3xl bg-[rgb(var(--page-bg))] p-4 md:p-6">
+    <section
+      style={vars}
+      className="relative rounded-3xl bg-[rgb(var(--page-bg))] p-4 sm:p-5 md:p-6"
+    >
       {/* Background glows */}
       <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden rounded-3xl">
         <div className="absolute inset-0 opacity-0 dark:opacity-100">
@@ -76,7 +75,7 @@ export default function DashboardPage() {
           classOptions={CLASSES}
         />
 
-        {/* ✅ Responsive grid: 1 col mobile, 2 col tablet, 3 col desktop */}
+        {/* ✅ responsive grid */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {enabled.avgComprehension && (
             <AverageComprehensionCard theme={theme} variant={cardVariant} valuePct={78} data={comprehensionTrend} />
@@ -109,13 +108,9 @@ export default function DashboardPage() {
           {enabled.leaderboard && (
             <StudentLeaderboardCard theme={theme} variant={cardVariant} rows={filteredLeaderboard} />
           )}
-  
         </div>
-          <ModuleFooter
-        theme={theme}
-        className="w-full"
-        containerClassName="max-w-screen-2xl"
-      />
+
+        <ModuleFooter theme={theme} className="w-full" containerClassName="max-w-screen-2xl" />
       </div>
     </section>
   );

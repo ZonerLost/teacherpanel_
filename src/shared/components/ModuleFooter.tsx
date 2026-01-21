@@ -1,4 +1,3 @@
-
 import { Facebook, Linkedin, Twitter, Youtube } from "lucide-react";
 import { cn } from "../utils/cn";
 
@@ -8,11 +7,22 @@ type FooterLink = {
   onClick?: () => void;
 };
 
+type SocialLink = {
+  label: string;
+  href: string;
+  icon: React.ReactNode;
+};
+
 type Props = {
   theme?: "light" | "dark";
   className?: string;
   containerClassName?: string;
+
   links?: FooterLink[];
+
+  brandName?: string;
+  year?: number;
+  socialLinks?: SocialLink[];
 };
 
 const defaultLinks: FooterLink[] = [
@@ -21,90 +31,106 @@ const defaultLinks: FooterLink[] = [
   { label: "Legal", href: "#" },
 ];
 
+const defaultSocial: SocialLink[] = [
+  { label: "Facebook", href: "#", icon: <Facebook className="h-5 w-5" /> },
+  { label: "Twitter", href: "#", icon: <Twitter className="h-5 w-5" /> },
+  { label: "LinkedIn", href: "#", icon: <Linkedin className="h-5 w-5" /> },
+  { label: "YouTube", href: "#", icon: <Youtube className="h-5 w-5" /> },
+];
+
 export function ModuleFooter({
   theme,
   className,
   containerClassName,
   links = defaultLinks,
+  socialLinks = defaultSocial,
 }: Props) {
   const isDark = theme === "dark";
+
+  const baseBg = isDark ? "bg-[#1b0b2a]" : "bg-white";
+  const baseText = "text-[rgb(var(--text))]";
+
+  const linkCls = cn(
+    baseText,
+    "opacity-80 hover:opacity-100 transition",
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--primary))] focus-visible:ring-offset-2",
+    isDark ? "focus-visible:ring-offset-[#1b0b2a]" : "focus-visible:ring-offset-white",
+    "rounded-md"
+  );
+
+  const iconBtnCls = cn(
+    baseText,
+    "opacity-80 hover:opacity-100 transition",
+    "inline-flex h-10 w-10 items-center justify-center rounded-xl",
+    "hover:bg-black/5 dark:hover:bg-white/5",
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--primary))] focus-visible:ring-offset-2",
+    isDark ? "focus-visible:ring-offset-[#1b0b2a]" : "focus-visible:ring-offset-white"
+  );
 
   return (
     <footer
       role="contentinfo"
       className={cn(
-        "w-full",
-        "border-t border-[rgb(var(--border))]",
-        isDark ? "bg-[#1b0b2a]" : "bg-white",
+        "w-full border-t border-[rgb(var(--border))]",
+        baseBg,
         className
       )}
     >
       <div
         className={cn(
-          "mx-auto flex items-center justify-between",
-          "px-6 py-4",
-          "max-w-[1200px]",
+          "mx-auto w-full ",
+          "px-4 py-5 sm:px-6 lg:px-8",
           containerClassName
         )}
       >
-        {/* Left links */}
-        <nav className="flex items-center gap-8 text-sm">
-          {links.map((l) => {
-            const common =
-              "text-[rgb(var(--text))] opacity-80 hover:opacity-100 transition";
+        {/* Top row: Links + Social (responsive) */}
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          {/* Links (wrap on small screens) */}
+          <nav
+            aria-label="Footer links"
+            className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm"
+          >
+            {links.map((l) => {
+              if (l.onClick) {
+                return (
+                  <button key={l.label} type="button" onClick={l.onClick} className={linkCls}>
+                    {l.label}
+                  </button>
+                );
+              }
 
-            if (l.onClick) {
               return (
-                <button
+                <a
                   key={l.label}
-                  type="button"
-                  onClick={l.onClick}
-                  className={common}
+                  href={l.href ?? "#"}
+                  className={linkCls}
+                  rel={l.href?.startsWith("http") ? "noopener noreferrer" : undefined}
+                  target={l.href?.startsWith("http") ? "_blank" : undefined}
                 >
                   {l.label}
-                </button>
+                </a>
               );
-            }
+            })}
+          </nav>
 
-            return (
-              <a key={l.label} href={l.href ?? "#"} className={common}>
-                {l.label}
+          {/* Social icons */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            {socialLinks.map((s) => (
+              <a
+                key={s.label}
+                href={s.href}
+                aria-label={s.label}
+                className={iconBtnCls}
+                rel={s.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                target={s.href.startsWith("http") ? "_blank" : undefined}
+              >
+                {s.icon}
               </a>
-            );
-          })}
-        </nav>
-
-        {/* Right icons */}
-        <div className="flex items-center gap-5">
-          <a
-            href="#"
-            aria-label="Facebook"
-            className="text-[rgb(var(--text))] opacity-80 hover:opacity-100 transition"
-          >
-            <Facebook className="h-5 w-5" />
-          </a>
-          <a
-            href="#"
-            aria-label="Twitter"
-            className="text-[rgb(var(--text))] opacity-80 hover:opacity-100 transition"
-          >
-            <Twitter className="h-5 w-5" />
-          </a>
-          <a
-            href="#"
-            aria-label="LinkedIn"
-            className="text-[rgb(var(--text))] opacity-80 hover:opacity-100 transition"
-          >
-            <Linkedin className="h-5 w-5" />
-          </a>
-          <a
-            href="#"
-            aria-label="YouTube"
-            className="text-[rgb(var(--text))] opacity-80 hover:opacity-100 transition"
-          >
-            <Youtube className="h-5 w-5" />
-          </a>
+            ))}
+          </div>
         </div>
+
+
       </div>
     </footer>
   );

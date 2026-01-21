@@ -22,7 +22,7 @@ export function VocabularyEngagementCard({ theme, variant, data }: Props) {
     <Card
       variant={variant}
       className={cn(
-        "p-5",
+        "p-4 sm:p-5",
         "border-[rgb(var(--border))]",
         theme === "dark"
           ? "bg-[rgb(var(--surface)_/_0.55)] backdrop-blur-xl shadow-[0_18px_60px_rgba(0,0,0,0.45)]"
@@ -34,12 +34,12 @@ export function VocabularyEngagementCard({ theme, variant, data }: Props) {
         <CardDescription>Unique words learned and applied</CardDescription>
       </CardHeader>
 
-      <div className="mt-4 h-[180px] w-full">
+      <div className="mt-4 h-[170px] sm:h-[180px] md:h-[210px] w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data}>
+          <BarChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
             <CartesianGrid stroke={grid} vertical={false} />
             <XAxis dataKey="name" tick={{ fill: axis, fontSize: 11 }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fill: axis, fontSize: 11 }} axisLine={false} tickLine={false} width={28} />
+            <YAxis tick={{ fill: axis, fontSize: 11 }} axisLine={false} tickLine={false} width={30} />
             <Tooltip
               contentStyle={{
                 background: "rgb(var(--surface))",
@@ -53,7 +53,7 @@ export function VocabularyEngagementCard({ theme, variant, data }: Props) {
         </ResponsiveContainer>
       </div>
 
-      <div className="mt-4 grid grid-cols-2 gap-2">
+      <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
         <div className={cn("rounded-2xl border p-3", tileClass)}>
           <div className={cn("text-[11px] font-semibold", theme === "light" ? "text-white/90" : "text-[rgb(var(--muted))]")}>
             Top Vocab Builder
