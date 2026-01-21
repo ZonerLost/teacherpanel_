@@ -1,5 +1,6 @@
 import { Modal, Button } from "../../../../src/shared/ui";
 import type { ReportRow } from "../reports.types";
+import { cn } from "../../../shared/utils/cn";
 
 type Props = {
   open: boolean;
@@ -7,12 +8,44 @@ type Props = {
   row: ReportRow | null;
   onDownloadPdf: () => void;
   onDownloadCsv: () => void;
+  theme?: "light" | "dark"; // optional if you want rings to match theme
 };
 
-export function DownloadReportModal({ open, onClose, row, onDownloadPdf, onDownloadCsv }: Props) {
+export function DownloadReportModal({
+  open,
+  onClose,
+  row,
+  onDownloadPdf,
+  onDownloadCsv,
+  theme = "light",
+}: Props) {
   if (!row) return null;
 
   const disabled = row.status !== "generated";
+
+  const pdfBg = theme === "dark" ? "#7C3AED" : "#6D28D9";
+  const csvBg = "#F97316";
+
+  const pdfRing =
+    theme === "dark"
+      ? "focus-visible:ring-violet-500/30"
+      : "focus-visible:ring-violet-600/25";
+
+  const csvRing =
+    theme === "dark"
+      ? "focus-visible:ring-orange-500/30"
+      : "focus-visible:ring-orange-500/25";
+
+  const btnBase = (ringCls: string) =>
+    cn(
+      "h-11 rounded-2xl px-4 font-semibold",
+      "!text-white",
+      "shadow-sm",
+      "hover:brightness-95 active:brightness-90",
+      "focus-visible:outline-none focus-visible:ring-4",
+      ringCls,
+      "disabled:cursor-not-allowed disabled:opacity-60"
+    );
 
   return (
     <Modal
@@ -39,10 +72,23 @@ export function DownloadReportModal({ open, onClose, row, onDownloadPdf, onDownl
         </div>
 
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-          <Button variant="primary" onClick={onDownloadPdf} disabled={disabled}>
+          <Button
+            variant="ghost"
+            className={btnBase(pdfRing)}
+            style={{ backgroundColor: pdfBg }}
+            onClick={onDownloadPdf}
+            disabled={disabled}
+          >
             Download PDF
           </Button>
-          <Button variant="secondary" onClick={onDownloadCsv} disabled={disabled}>
+
+          <Button
+            variant="ghost"
+            className={btnBase(csvRing)}
+            style={{ backgroundColor: csvBg }}
+            onClick={onDownloadCsv}
+            disabled={disabled}
+          >
             Download CSV
           </Button>
         </div>

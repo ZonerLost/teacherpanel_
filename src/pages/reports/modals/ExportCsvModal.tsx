@@ -1,6 +1,7 @@
 import React from "react";
 import { Modal, Button } from "../../../../src/shared/ui";
 import type { ReportFilters } from "../reports.types";
+import { cn } from "../../../shared/utils/cn";
 
 type Props = {
   open: boolean;
@@ -10,10 +11,24 @@ type Props = {
   onExport: () => void;
 };
 
-export function ExportCsvModal({ open, onClose, filters, onExport }: Props) {
+export function ExportCsvModal({ open, onClose, filters, theme, onExport }: Props) {
   const [loading, setLoading] = React.useState(false);
 
-  const primary = "bg-orange-500 text-white hover:bg-orange-600";
+  const primaryBg = "#F97316"; // orange-500
+  const primaryRing =
+    theme === "dark"
+      ? "focus-visible:ring-orange-500/30"
+      : "focus-visible:ring-orange-500/25";
+
+  const primaryBtnClass = cn(
+    "h-11 rounded-2xl px-5 font-semibold",
+    "!text-white",
+    "shadow-sm",
+    "hover:brightness-95 active:brightness-90",
+    "focus-visible:outline-none focus-visible:ring-4",
+    primaryRing,
+    "disabled:cursor-not-allowed disabled:opacity-60"
+  );
 
   const doExport = async () => {
     setLoading(true);
@@ -38,7 +53,14 @@ export function ExportCsvModal({ open, onClose, filters, onExport }: Props) {
           <Button variant="outline" onClick={onClose} disabled={loading}>
             Cancel
           </Button>
-          <Button variant="ghost" className={primary} onClick={doExport} disabled={loading}>
+
+          <Button
+            variant="ghost"
+            className={primaryBtnClass}
+            style={{ backgroundColor: primaryBg }}
+            onClick={doExport}
+            disabled={loading}
+          >
             {loading ? "Exporting..." : "Export CSV"}
           </Button>
         </>
@@ -47,9 +69,11 @@ export function ExportCsvModal({ open, onClose, filters, onExport }: Props) {
       <div className="space-y-3 text-sm">
         <div className="rounded-2xl bg-[rgb(var(--surface-2))] p-3">
           <div className="text-xs text-[rgb(var(--muted))]">Filters applied</div>
+
           <div className="mt-1 text-sm text-[rgb(var(--text))]/90">
             {filters.className} • {filters.student} • {filters.reportType}
           </div>
+
           <div className="mt-1 text-xs text-[rgb(var(--muted))]">
             {filters.dateFrom} → {filters.dateTo}
           </div>

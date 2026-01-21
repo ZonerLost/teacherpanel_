@@ -1,5 +1,16 @@
 import { Wand2, Save, Trash2 } from "lucide-react";
-import { Card, CardHeader, CardTitle, CardDescription, FormField, Input, Select, Textarea, Slider, Button } from "../../../shared/ui";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  FormField,
+  Input,
+  Select,
+  Textarea,
+  Slider,
+  Button,
+} from "../../../shared/ui";
 import type { QuizConfig, Difficulty } from "../quizBuilder.types";
 import { SUBJECTS, GRADE_LEVELS, DIFFICULTIES } from "../quizBuilder.data";
 import { cn } from "../../../shared/utils/cn";
@@ -27,16 +38,30 @@ export function QuizConfigPanel({
   onOpenClear,
   theme,
 }: Props) {
-  const primaryBtnClass =
+  // Always-visible primary button (works even if Button variant tries to override classes)
+  const primaryBg = theme === "dark" ? "#7C3AED" : "#F97316";
+  const primaryRing =
     theme === "dark"
-      ? "bg-violet-600 text-white hover:bg-violet-700"
-      : "bg-orange-500 text-white hover:bg-orange-600";
+      ? "focus-visible:ring-violet-500/30"
+      : "focus-visible:ring-orange-500/25";
+
+  const primaryBtnClass = cn(
+    "w-full h-11 rounded-2xl font-semibold",
+    "!text-white",
+    "shadow-sm",
+    "hover:brightness-95 active:brightness-90",
+    "focus-visible:outline-none focus-visible:ring-4",
+    primaryRing,
+    "disabled:cursor-not-allowed disabled:opacity-60"
+  );
 
   return (
     <Card variant={variant} className="p-5">
       <CardHeader>
         <CardTitle>Quiz Configuration</CardTitle>
-        <CardDescription>Define quiz parameters and generate questions with AI.</CardDescription>
+        <CardDescription>
+          Define quiz parameters and generate questions with AI.
+        </CardDescription>
       </CardHeader>
 
       <div className="mt-4 space-y-4">
@@ -49,7 +74,10 @@ export function QuizConfigPanel({
         </FormField>
 
         <FormField label="Subject" required>
-          <Select value={config.subject} onChange={(e) => onChange({ subject: e.target.value })}>
+          <Select
+            value={config.subject}
+            onChange={(e) => onChange({ subject: e.target.value })}
+          >
             {SUBJECTS.map((s) => (
               <option key={s} value={s}>
                 {s}
@@ -59,7 +87,10 @@ export function QuizConfigPanel({
         </FormField>
 
         <FormField label="Grade Level" required>
-          <Select value={config.gradeLevel} onChange={(e) => onChange({ gradeLevel: e.target.value })}>
+          <Select
+            value={config.gradeLevel}
+            onChange={(e) => onChange({ gradeLevel: e.target.value })}
+          >
             {GRADE_LEVELS.map((g) => (
               <option key={g} value={g}>
                 {g}
@@ -86,7 +117,9 @@ export function QuizConfigPanel({
         <FormField label="Difficulty" required>
           <Select
             value={config.difficulty}
-            onChange={(e) => onChange({ difficulty: e.target.value as Difficulty })}
+            onChange={(e) =>
+              onChange({ difficulty: e.target.value as Difficulty })
+            }
           >
             {DIFFICULTIES.map((d) => (
               <option key={d} value={d}>
@@ -105,8 +138,10 @@ export function QuizConfigPanel({
         </FormField>
 
         <div className="mt-2 space-y-2">
+          {/* ✅ Always visible in LIGHT + DARK */}
           <Button
-            className={cn("w-full", primaryBtnClass)}
+            className={primaryBtnClass}
+            style={{ backgroundColor: primaryBg }}
             variant="ghost"
             onClick={onOpenGenerate}
             leftIcon={<Wand2 className="h-4 w-4" />}

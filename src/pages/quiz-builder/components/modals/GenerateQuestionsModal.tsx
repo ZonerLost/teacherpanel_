@@ -20,12 +20,24 @@ export function GenerateQuestionsModal({
   theme,
 }: Props) {
   const [loading, setLoading] = React.useState(false);
-  const primaryBtnClass =
-    theme === "dark"
-      ? "bg-violet-600 text-white hover:bg-violet-700"
-      : "bg-orange-500 text-white hover:bg-orange-600";
 
-  const canGenerate = config.title.trim().length > 0 && config.prompt.trim().length > 0;
+  const canGenerate =
+    config.title.trim().length > 0 && config.prompt.trim().length > 0;
+
+  const primaryBg = theme === "dark" ? "#7C3AED" : "#F97316"; // violet / orange
+  const primaryRing =
+    theme === "dark"
+      ? "focus-visible:ring-violet-500/30"
+      : "focus-visible:ring-orange-500/25";
+
+  const primaryBtnClass = [
+    "min-w-[120px] rounded-2xl",
+    "!text-white",
+    "hover:brightness-95 active:brightness-90",
+    "focus-visible:outline-none focus-visible:ring-4",
+    primaryRing,
+    "disabled:cursor-not-allowed disabled:opacity-60",
+  ].join(" ");
 
   const doGenerate = async () => {
     if (!canGenerate) return;
@@ -51,11 +63,14 @@ export function GenerateQuestionsModal({
           <Button variant="outline" onClick={onClose} disabled={loading}>
             Cancel
           </Button>
+
+          {/* Always-visible primary button (light + dark) */}
           <Button
             variant="ghost"
             onClick={doGenerate}
             disabled={!canGenerate || loading}
             className={primaryBtnClass}
+            style={{ backgroundColor: primaryBg }}
           >
             {loading ? "Generating..." : "Generate"}
           </Button>

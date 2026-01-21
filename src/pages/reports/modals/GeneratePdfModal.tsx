@@ -1,6 +1,7 @@
 import React from "react";
 import { Modal, Button } from "../../../../src/shared/ui";
 import type { ReportFilters, ReportRow } from "../reports.types";
+import { cn } from "../../../shared/utils/cn";
 
 type Props = {
   open: boolean;
@@ -11,13 +12,31 @@ type Props = {
   onExportPdf: (row: ReportRow) => void;
 };
 
-export function GeneratePdfModal({ open, onClose, filters, theme, onGenerated, onExportPdf }: Props) {
+export function GeneratePdfModal({
+  open,
+  onClose,
+  filters,
+  theme,
+  onGenerated,
+  onExportPdf,
+}: Props) {
   const [loading, setLoading] = React.useState(false);
 
-  const primary =
+  const primaryBg = theme === "dark" ? "#7C3AED" : "#6D28D9"; // violet-600 / violet-700
+  const primaryRing =
     theme === "dark"
-      ? "bg-violet-600 text-white hover:bg-violet-700"
-      : "bg-purple-700 text-white hover:bg-purple-800";
+      ? "focus-visible:ring-violet-500/30"
+      : "focus-visible:ring-violet-600/25";
+
+  const primaryBtnClass = cn(
+    "h-11 rounded-2xl px-5 font-semibold",
+    "!text-white",
+    "shadow-sm",
+    "hover:brightness-95 active:brightness-90",
+    "focus-visible:outline-none focus-visible:ring-4",
+    primaryRing,
+    "disabled:cursor-not-allowed disabled:opacity-60"
+  );
 
   const doGenerate = async () => {
     setLoading(true);
@@ -55,7 +74,14 @@ export function GeneratePdfModal({ open, onClose, filters, theme, onGenerated, o
           <Button variant="outline" onClick={onClose} disabled={loading}>
             Cancel
           </Button>
-          <Button variant="ghost" className={primary} onClick={doGenerate} disabled={loading}>
+
+          <Button
+            variant="ghost"
+            className={primaryBtnClass}
+            style={{ backgroundColor: primaryBg }}
+            onClick={doGenerate}
+            disabled={loading}
+          >
             {loading ? "Generating..." : "Generate PDF"}
           </Button>
         </>
@@ -72,14 +98,17 @@ export function GeneratePdfModal({ open, onClose, filters, theme, onGenerated, o
             <div className="text-xs text-[rgb(var(--muted))]">Student</div>
             <div className="font-semibold">{filters.student}</div>
           </div>
+
           <div className="rounded-2xl bg-[rgb(var(--surface-2))] p-3">
             <div className="text-xs text-[rgb(var(--muted))]">Assignment</div>
             <div className="font-semibold">{filters.assignment}</div>
           </div>
+
           <div className="rounded-2xl bg-[rgb(var(--surface-2))] p-3">
             <div className="text-xs text-[rgb(var(--muted))]">Report Type</div>
             <div className="font-semibold">{filters.reportType}</div>
           </div>
+
           <div className="rounded-2xl bg-[rgb(var(--surface-2))] p-3">
             <div className="text-xs text-[rgb(var(--muted))]">Date Range</div>
             <div className="font-semibold">
